@@ -14,7 +14,7 @@ const Login = async () => {
     <main className="flex justify-center items-center w-full h-[100vh]">
       <div
         className="w-[45rem] p-10 flex flex-col items-center h-fit"
-        style={{ boxShadow: "3px 3px 47px -13px rgba(224,224,224,1)" }}
+        style={{ boxShadow: "3px 3px 47px -2px rgba(224,224,224,1)" }}
       >
         <h1 className="text-black text-center text-3xl">Welcome again</h1>
         <SignInButtons />

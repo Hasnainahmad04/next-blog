@@ -1,14 +1,14 @@
 "use client";
 import AvatarDropdown from "@components/AvatarDropdown";
-import Editor from "@components/Editor";
 import { Divider } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
-import { EditorState } from "lexical";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import Editor from "@components/Editor";
+import { OutputData } from "@editorjs/editorjs";
 
 const Nav = ({
   isDisabled = false,
@@ -53,22 +53,18 @@ const Nav = ({
 const CreateBlog = () => {
   const [thumbnail, setThumbnail] = useState("");
   const [isDialogOpen, setDialogVisibility] = useState(false);
-  const editorStateRef = useRef<EditorState | null>(null);
+  const [content, setContent] = useState<OutputData | undefined>();
 
   const log = () => {
-    const content = editorStateRef.current;
-    console.log({ content: content });
     setDialogVisibility(true);
   };
 
   return (
     <>
       <div className="px-[10%] max-md:px-4">
-        <Nav
-          // isDisabled={content?.split(" ")!?.length < 10 ? true : false}
-          onPublish={log}
-        />
-        <Editor editorStateRef={editorStateRef} />
+        <Nav onPublish={log} />
+
+        <Editor data={content} onChange={setContent} holder="editor" />
 
         <PublishModal
           isVisible={isDialogOpen}
