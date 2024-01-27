@@ -5,7 +5,6 @@ import Nav from "@components/Nav";
 import ReactQueryProvider from "@components/QueryProvider";
 import NextTopLoader from "nextjs-toploader";
 import AuthProvider from "@components/AuthProvider";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"; // or `v14-appRouter` if you are using Next.js v14
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +24,8 @@ export default function RootLayout({
         <AuthProvider>
           <ReactQueryProvider>
             <Nav />
-            <main className="p-6">
-              <NextTopLoader color="#2C6634" showSpinner={false} />
-              {children}
-            </main>
+            <NextTopLoader color="#2C6634" showSpinner={false} />
+            {children}
           </ReactQueryProvider>
         </AuthProvider>
       </body>

@@ -15,6 +15,9 @@ const config: Config = {
         lato: ["lato", "sans-serif"],
         poppins: ["poppins", "sans-serif"],
       },
+      colors: {
+        "yellow-hero": "#FFC017",
+      },
     },
   },
 };
