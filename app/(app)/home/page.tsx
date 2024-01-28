@@ -9,7 +9,16 @@ const App = async () => {
   return (
     <>
       {!session && <HeroSection />}
-      <div className="h-[50rem]"></div>
+      <div className="mx-[5rem] my-10 grid grid-cols-12 gap-4 max-md:block">
+        <section className="col-span-8">
+          {Array.from({ length: 20 }).map((a, b) => (
+            <div key={b} className="h-[5rem] bg-green-300 my-4"></div>
+          ))}
+        </section>
+        <aside className="col-span-4 bg-green-700">
+          <div className="sticky top-[6rem]">discover</div>
+        </aside>
+      </div>
     </>
   );
 };

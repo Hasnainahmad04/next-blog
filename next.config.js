@@ -14,6 +14,12 @@ const nextConfig = {
         pathname: "/a/*",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "*",
+        pathname: "/**",
+        port: "",
+      },
     ],
   },
   typescript: { ignoreBuildErrors: true },

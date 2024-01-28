@@ -63,9 +63,9 @@ model Article {
   articleId String    @id @default(uuid()) @map("_id")
   title     String
   readTime  String?
-  content   String?
+  content   Json?
   createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
   thumbnail String?
   tags      String[]
   likes     Int?      @default(0)

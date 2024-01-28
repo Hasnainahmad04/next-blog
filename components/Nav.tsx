@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import AvatarDropdown from "./AvatarDropdown";
 import WriteStoryIcon from "@public/assets/icons/WriteStoryIcon";
 import AppButton from "./AppButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const routesWithoutNavbar = ["/write-story", "/signin"];
 
@@ -14,6 +14,7 @@ const Nav = () => {
   const pathname = usePathname();
   const navigation = useRouter();
   const { status } = useSession();
+  const [background, setBakground] = useState("bg-white");
 
   const isHeroNav =
     pathname === "/home" &&
@@ -28,18 +29,19 @@ const Nav = () => {
     authenticated: <AvatarDropdown />,
     unauthenticated: (
       <AppButton
-        title="Sign in"
+        title="Get Started"
         onClick={() => navigation.push("/api/auth/signin")}
         variant={isHeroNav ? "black" : "green"}
+        className="py-2 text-sm font-medium px-4"
       />
     ),
   };
 
   return (
     <div
-      className={`sticky top-0 z-10 h-[5rem] w-full flex justify-between items-center text-black border-b ${isHeroNav ? "border-black" : "border-gray-300"} py-4 px-[5%] max-md:px-4 ${isHeroNav && "bg-yellow-hero"}`}
+      className={`bg-white sticky top-0 z-10 h-[5rem] w-full flex justify-between items-center text-black border-b ${isHeroNav ? "border-black" : "border-gray-300"} py-4 px-[5%] max-md:px-4 ${isHeroNav && "bg-yellow-hero"}`}
     >
-      <Link href={"/"}>
+      <Link href={"/"} className="w-[10rem]">
         <Logo />
       </Link>
 

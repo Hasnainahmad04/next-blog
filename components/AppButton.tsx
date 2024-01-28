@@ -16,7 +16,7 @@ const AppButton: React.FC<Props> = ({
   className,
 }) => {
   const background = {
-    green: "bg-green-700 hover:bg-green-800 ",
+    green: "bg-green-600 hover:bg-green-700 ",
     black: "bg-black",
   };
 
