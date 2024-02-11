@@ -1,10 +1,18 @@
-import { OutputData } from "@editorjs/editorjs";
-import { Slide, Dialog, Divider } from "@mui/material";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { IoMdClose } from "react-icons/io";
+
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { getBlogMetaData } from "../util";
+import toast from "react-hot-toast";
+// UI Components
+import { Dialog, Divider, Slide } from "@mui/material";
 import AppButton from "@components/AppButton";
+import Image from "next/image";
+import { IoMdClose } from "react-icons/io";
+// Types
+import type { OutputData } from "@editorjs/editorjs";
+import { BlogPayload } from "@types";
 
 interface ModalProps {
   isVisible: boolean;
@@ -14,12 +22,21 @@ interface ModalProps {
 
 type Value = {
   title: string;
-  tags?: string | string[];
+  tags: string[];
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const createPost = async (payload: BlogPayload) => {
+  const res = fetch("/api/blog", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  return (await res).json();
+};
 
 const PublishModal: React.FC<ModalProps> = ({
   content,
@@ -28,28 +45,51 @@ const PublishModal: React.FC<ModalProps> = ({
 }) => {
   const [{ title, tags }, setValue] = useState<Value>({
     title: "",
-    tags: "",
+    tags: [],
   });
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { mutate: publishPost, isPending } = useMutation({
+    mutationFn: createPost,
+    mutationKey: ["createPost"],
+    onSuccess: () => {
+      toast.success("Story Published");
+      router.push("/");
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
+
   const { image, paragraph, title: defautlTitle } = getBlogMetaData(content);
 
   const handleTagChange = (val: string) => {
     const tags = val
       .split(",")
       .map((v) => v.trim())
-      .filter((v) => v);
-    console.log({ tags });
+      .filter(Boolean);
+    setValue((val) => ({ ...val, tags }));
   };
 
   useEffect(() => {
     setValue((val) => ({ ...val, title: defautlTitle }));
   }, [defautlTitle]);
 
-  console.log({ tags });
+  const handlePublish = () => {
+    publishPost({
+      userId: session?.user.id!,
+      title,
+      tags,
+      content: content!,
+      ...(image ? { thumbnail: image } : {}),
+    });
+  };
 
   return (
     <>
       <Dialog
         open={isVisible}
+        //@ts-ignore
         TransitionComponent={Transition}
         keepMounted
         onClose={onClose}
@@ -57,7 +97,7 @@ const PublishModal: React.FC<ModalProps> = ({
         fullScreen
       >
         <section className="max-w-[1096px] py-[6rem] h-screen self-center flex flex-row max-md:flex-col max-md:py-4 px-4">
-          <div className="w-[50%] p-[2.5rem]">
+          <div className="w-full p-[2.5rem]">
             <button
               onClick={onClose}
               className="absolute top-0 right-0 text-gray-700 p-8 h-[30px]"
@@ -77,7 +117,7 @@ const PublishModal: React.FC<ModalProps> = ({
               />
             ) : (
               <div className="w-full bg-neutral-50 h-[200px] justify-center items-center flex my-3">
-                <p className="text-center text-sm  text-neutral-500 mx-[5rem]">
+                <p className="text-center text-sm  text-neutral-500 mx-[2rem] md:mx-[5rem]">
                   Include a high-quality image in your story to make it more
                   inviting to readers.
                 </p>
@@ -86,9 +126,12 @@ const PublishModal: React.FC<ModalProps> = ({
             <textarea
               className="relative relaw-full text-xl font-semibold outline-none text-gray-800 resize-none text-wrap break-words"
               placeholder="Write a preview title"
-              defaultValue={title}
+              value={title}
               rows={3}
               maxLength={100}
+              onChange={(e) =>
+                setValue((val) => ({ ...val, title: e.currentTarget?.value }))
+              }
             />
             <Divider />
 
@@ -97,7 +140,7 @@ const PublishModal: React.FC<ModalProps> = ({
             </p>
             <Divider />
           </div>
-          <div className="w-[50%] p-[2.5rem]">
+          <div className="w-full p-[2.5rem]">
             <span>Publishing</span>
             <label
               htmlFor="tags"
@@ -115,7 +158,12 @@ const PublishModal: React.FC<ModalProps> = ({
               onChange={(e) => handleTagChange(e.currentTarget.value)}
             />
             <div className="my-4">
-              <AppButton title="Publish Now" className="px-4 py-2 text-sm" />
+              <AppButton
+                title="Publish Now"
+                className="px-4 py-2 text-sm"
+                disabled={isPending || !title?.length}
+                onClick={handlePublish}
+              />
             </div>
           </div>
         </section>

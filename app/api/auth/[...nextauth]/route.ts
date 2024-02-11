@@ -8,13 +8,13 @@ const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
       allowDangerousEmailAccountLinking: true,
     }),
     Github({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID ?? "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
       allowDangerousEmailAccountLinking: true,
     }),
   ],
@@ -24,9 +24,8 @@ const handler = NextAuth({
       const user = await prisma.user.findFirst({
         where: { email: session.user?.email! },
       });
-      session.user = user;
-
-      return session;
+      if (!user) return session;
+      else return { ...session, user };
     },
   },
   pages: { signIn: "/signin" },
