@@ -1,5 +1,3 @@
-"use client";
-
 import Embed from "@editorjs/embed";
 import Table from "@editorjs/table";
 import List from "@editorjs/list";

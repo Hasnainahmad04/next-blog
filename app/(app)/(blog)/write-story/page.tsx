@@ -1,9 +1,13 @@
 "use client";
-import Editor from "@components/Editor";
 import { OutputData } from "@editorjs/editorjs";
 import { useState } from "react";
 import PublishModal from "./PublishModal";
 import WriteStoryNavbar from "./WriteStoryNavbar";
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import("@components/Editor"), {
+  ssr: false,
+});
 
 const CreateBlog = () => {
   const [isDialogOpen, setDialogVisibility] = useState(false);
@@ -12,7 +16,6 @@ const CreateBlog = () => {
   const handlePublish = () => {
     setDialogVisibility(true);
   };
-  console.log({ content });
 
   const isDisabled =
     !content || !content.blocks.some((el) => el.type === "paragraph");
