@@ -63,7 +63,7 @@ model Article {
   articleId String    @id @default(uuid()) @map("_id")
   title     String
   readTime  String?
-  content   Json?
+  content   Json
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
   thumbnail String?
